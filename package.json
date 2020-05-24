@@ -1,16 +1,16 @@
 {
-  "name": "react-boilerplate",
-  "version": "4.0.0",
-  "description": "A highly scalable, offline-first foundation with the best DX and a focus on performance and best practices",
+  "name": "react-calendar",
+  "version": "1.0.0",
+  "description": "Corporate calendar application based on react-boilerplate",
   "repository": {
     "type": "git",
-    "url": "git://github.com/react-boilerplate/react-boilerplate.git"
+    "url": "git+https://github.com/Biznigaev/test.greenatom.git"
   },
   "engines": {
     "npm": ">=5",
     "node": ">=8.15.1"
   },
-  "author": "Max Stoiber",
+  "author": "Yuriy Biznigaev",
   "license": "MIT",
   "scripts": {
     "analyze:clean": "rimraf stats.json",
@@ -22,6 +22,7 @@
     "prebuild": "npm run build:clean",
     "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.prod.babel.js --color -p --progress --hide-modules --display-optimization-bailout",
     "build:clean": "rimraf ./build",
+    "dev": "cross-env NODE_ENV=development nodemon --delay 1.5 server/index.js",
     "start": "cross-env NODE_ENV=development node server",
     "start:tunnel": "cross-env NODE_ENV=development ENABLE_TUNNEL=true node server",
     "start:production": "npm run test && npm run build && npm run start:prod",
@@ -79,6 +80,7 @@
     "ip": "1.1.5",
     "lodash": "4.17.11",
     "minimist": "1.2.0",
+    "nodemon": "^2.0.4",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",
