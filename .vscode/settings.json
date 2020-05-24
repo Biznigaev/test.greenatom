@@ -1,0 +1,23 @@
+{
+    "eslint.probe": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "html",
+        "vue",
+        "markdown",
+        "jsx"
+    ],
+    "editor.formatOnSave": true,
+    "files.autoSaveDelay": 1500,
+    "prettier.jsxBracketSameLine": true,
+    "prettier.jsxSingleQuote": true,
+    "prettier.tabWidth": 4,
+    "files.associations": {
+      "*.js": "javascriptreact"
+    },
+    "emmet.syntaxProfiles": {
+      "javascript": "javascriptreact"
+    }
+}
