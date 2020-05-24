@@ -1,11 +1,9 @@
-/**
- * Create the store with dynamic reducers
- */
-
 import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
+// import thunk from 'redux-thunk';
 import createReducer from './reducers';
+import { verifyAuth } from './actions';
 
 export default function configureStore(initialState = {}, history) {
   let composeEnhancers = compose;
@@ -54,6 +52,6 @@ export default function configureStore(initialState = {}, history) {
       store.replaceReducer(createReducer(store.injectedReducers));
     });
   }
-
+  store.dispatch(verifyAuth());
   return store;
 }

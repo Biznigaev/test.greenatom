@@ -1,28 +1,41 @@
-/**
- *
- * App.js
- *
- * This component is the skeleton around the actual pages, and should only
- * contain code that should be seen on all pages. (e.g. navigation bar)
- *
- */
-
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-import HomePage from 'containers/HomePage/Loadable';
+import ProtectedRoute from 'components/ProtectedRoute/Loadable';
+import LoginPage from 'containers/LoginPage/Loadable';
+import CalendarPage from 'containers/CalendarPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
 
-export default function App() {
+function mapStateToProps(state) {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    isVerifying: state.auth.isVerifying,
+  };
+}
+
+function App(props) {
+  // eslint-disable-next-line react/prop-types
+  const { isAuthenticated, isVerifying } = props;
+
   return (
-    <div>
+    <>
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <ProtectedRoute
+          exact
+          path="/"
+          component={CalendarPage}
+          isAuthenticated={isAuthenticated}
+          isVerifying={isVerifying}
+        />
+        <Route path="/login" component={LoginPage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
-    </div>
+    </>
   );
 }
+
+export default connect(mapStateToProps)(App);

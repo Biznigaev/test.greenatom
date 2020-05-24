@@ -2,6 +2,8 @@
   "name": "react-calendar",
   "version": "1.0.0",
   "description": "Corporate calendar application based on react-boilerplate",
+  "author": "Yuriy Biznigaev",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Biznigaev/test.greenatom.git"
@@ -10,8 +12,6 @@
     "npm": ">=5",
     "node": ">=8.15.1"
   },
-  "author": "Yuriy Biznigaev",
-  "license": "MIT",
   "scripts": {
     "analyze:clean": "rimraf stats.json",
     "preanalyze": "npm run analyze:clean",
@@ -66,11 +66,13 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.4.3",
+    "antd": "^4.2.4",
     "chalk": "^2.4.2",
     "compression": "1.7.4",
     "connected-react-router": "6.4.0",
     "cross-env": "5.2.0",
     "express": "4.16.4",
+    "firebase": "^7.14.5",
     "fontfaceobserver": "2.1.0",
     "history": "4.9.0",
     "hoist-non-react-statics": "3.3.0",
@@ -80,7 +82,6 @@
     "ip": "1.1.5",
     "lodash": ">=4.17.12",
     "minimist": ">=1.2.3",
-    "nodemon": "^2.0.4",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",
@@ -88,8 +89,10 @@
     "react-intl": "2.8.0",
     "react-redux": "7.0.2",
     "react-router-dom": "5.0.0",
+    "react-with-firebase-auth": "^1.3.2",
     "redux": "4.0.1",
     "redux-saga": "1.0.2",
+    "redux-thunk": "^2.3.0",
     "reselect": "4.0.0",
     "sanitize.css": "8.0.0",
     "styled-components": "4.2.0"
@@ -141,6 +144,7 @@
     "lint-staged": "8.1.5",
     "ngrok": "3.1.1",
     "node-plop": "0.18.0",
+    "nodemon": "^2.0.4",
     "null-loader": "0.1.1",
     "offline-plugin": "5.0.6",
     "plop": "2.3.0",
