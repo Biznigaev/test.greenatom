@@ -1,19 +1,19 @@
-/**
- * NotFoundPage
- *
- * This is the page we show when the user visits a url that doesn't have a route
- *
- */
-
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { Result, Button } from 'antd';
 
 import messages from './messages';
 
 export default function NotFound() {
   return (
-    <h1>
-      <FormattedMessage {...messages.header} />
-    </h1>
+    <Result
+      status="404"
+      title={messages.title}
+      subTitle={messages.sub_title}
+      extra={
+        <Button type="primary" href="/">
+          {messages.button_text}
+        </Button>
+      }
+    />
   );
 }

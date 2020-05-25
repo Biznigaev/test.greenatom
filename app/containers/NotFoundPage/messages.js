@@ -8,8 +8,7 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.NotFoundPage';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the NotFoundPage container!',
-  },
+  title: '404',
+  sub_title: 'This is the NotFoundPage container!',
+  button_text: 'Back Home',
 });
