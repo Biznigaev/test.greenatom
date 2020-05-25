@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Layout } from 'antd';
 
 import ProtectedRoute from 'components/ProtectedRoute/Loadable';
 import LoginPage from 'containers/LoginPage/Loadable';
@@ -9,19 +10,12 @@ import NotFoundPage from 'containers/NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
 
-function mapStateToProps(state) {
-  return {
-    isAuthenticated: state.auth.isAuthenticated,
-    isVerifying: state.auth.isVerifying,
-  };
-}
-
 function App(props) {
   // eslint-disable-next-line react/prop-types
   const { isAuthenticated, isVerifying } = props;
 
   return (
-    <>
+    <Layout style={{ minHeight: '100vh' }}>
       <Switch>
         <ProtectedRoute
           exact
@@ -31,11 +25,18 @@ function App(props) {
           isVerifying={isVerifying}
         />
         <Route path="/login" component={LoginPage} />
-        <Route component={NotFoundPage} />
+        <Route path="*" component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
-    </>
+    </Layout>
   );
+}
+
+function mapStateToProps(state) {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    isVerifying: state.auth.isVerifying,
+  };
 }
 
 export default connect(mapStateToProps)(App);
