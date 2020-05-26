@@ -82,6 +82,8 @@
     "ip": "1.1.5",
     "lodash": ">=4.17.12",
     "minimist": ">=1.2.3",
+    "moment": "^2.26.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",
