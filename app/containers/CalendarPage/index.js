@@ -1,35 +1,53 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import UserPanel from 'components/UserPanel/Loadable';
+import CalendarApp from 'components/CalendarApp/Loadable';
 import CalendarModal from 'components/CalendarModal/Loadable';
-import { Spin, Layout, Calendar, Badge } from 'antd';
-import firestore from '../../firebase';
+import { Spin, Layout } from 'antd';
+import Moment from 'moment';
+import { firestore as db } from '../../firebase';
 import messages from './messages';
-import './calendar.css';
 
 class CalendarPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: []
+      events: [],
     };
   }
 
-  componentDidMount() {
-    firestore
-      .collections('events')
-      .get()
-      .then(querySnapshot => {
-        const data = querySnapshot.docs.map(doc => doc.data());
-        console.log(data);
-        // this.setState({ events: data });
+  createEvent = async data =>
+    await db.collection('events').add({
+      created_by: this.props.userId,
+      start_at: Moment(data.start_at).format('DD.MM.YYYY'),
+      participants: data.participants.push(this.props.userId),
+    });
+
+  fetchEvents = async () => {
+    const eventsRef = db.collection('events');
+    const eventsActual = await eventsRef
+      .where('participants', 'array-contains-any', [this.props.userId])
+      .get();
+    const events = [];
+    for (const doc of eventsActual.docs) {
+      events.push({
+        id: doc.id,
+        guests: doc.data().participants.length,
+        date: Moment(doc.data().start_at),
       });
-  }
+    }
+    return events;
+  };
+
+  componentDidMount = async () => {
+    const events = await this.fetchEvents();
+    this.setState({ events });
+  };
 
   render() {
     const { isLoggingOut } = this.props;
+    const { events } = this.state;
     const { Header, Content, Footer } = Layout;
-
     return (
       <Spin
         style={{ position: 'fixed', maxHeight: '100vh' }}
@@ -47,11 +65,7 @@ class CalendarPage extends Component {
           <UserPanel />
         </Header>
         <Content>
-          <Calendar
-            onPanelChange={onPanelChange}
-            dateCellRender={dateCellRender}
-            monthCellRender={monthCellRender}
-          />
+          <CalendarApp events={events} />
         </Content>
         <Footer style={{ textAlign: 'center' }}>
           <CalendarModal />
@@ -61,75 +75,9 @@ class CalendarPage extends Component {
   }
 }
 
-function onPanelChange(value, mode) {
-  console.log(value.format('YYYY-MM-DD'), mode);
-}
-
-function getListData(value) {
-  let listData;
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-      ];
-      break;
-    case 10:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-        { type: 'error', content: 'This is error event.' },
-      ];
-      break;
-    case 15:
-      listData = [
-        { type: 'warning', content: 'This is warning event' },
-        {
-          type: 'success',
-          content: 'This is very long usual event。。....',
-        },
-        { type: 'error', content: 'This is error event 1.' },
-        { type: 'error', content: 'This is error event 2.' },
-        { type: 'error', content: 'This is error event 3.' },
-        { type: 'error', content: 'This is error event 4.' },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-}
-
-function dateCellRender(value) {
-  const listData = getListData(value);
-  return (
-    <ul className="events">
-      {listData.map(item => (
-        <li key={item.content}>
-          <Badge status={item.type} text={item.content} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function getMonthData(value) {
-  if (value.month() === 8) {
-    return 1394;
-  }
-}
-
-function monthCellRender(value) {
-  const num = getMonthData(value);
-  return num ? (
-    <div className="notes-month">
-      <section>{num}</section>
-      <span>Backlog number</span>
-    </div>
-  ) : null;
-}
-
 function mapStateToProps(state) {
   return {
+    userId: state.auth.user.uid,
     isLoggingOut: state.auth.isLoggingOut,
   };
 }
