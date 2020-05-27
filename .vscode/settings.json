@@ -19,5 +19,7 @@
     },
     "emmet.syntaxProfiles": {
       "javascript": "javascriptreact"
-    }
+    },
+    "vetur.format.options.tabSize": 4,
+    "editor.detectIndentation": false
 }

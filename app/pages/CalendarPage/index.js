@@ -5,7 +5,7 @@ import CalendarApp from 'components/CalendarApp/Loadable';
 import CalendarModal from 'components/CalendarModal/Loadable';
 import { notification, Spin, Layout } from 'antd';
 import moment from 'moment';
-import { firestore as db } from '../../firebase';
+import * as FirestoreService from '../../services/firestore';
 import messages from './messages';
 
 class CalendarPage extends Component {
@@ -15,27 +15,26 @@ class CalendarPage extends Component {
       events: [],
       dateFormat: 'DD.MM.YYYY',
       unsubscribe: null,
+      toggleSubscribe: false,
     };
+    FirestoreService.setUserId(props.userId);
   }
 
   createEvent = async fields => {
     fields.participants.push(this.props.userId);
-    const eventsRef = db.collection('events');
-    const docRef = await eventsRef
-      .add({
-        created_by: this.props.userId,
-        start_at: moment(fields.start_at, this.state.dateFormat).format(
-          'YYYY.MM.DD',
-        ),
-        participants: fields.participants,
-      })
-      .catch(error => {
-        notification.error({
-          message: 'Cant create new event',
-          description: error.message,
-        });
+    const docRef = await FirestoreService.addCalendarEvent({
+      createdBy: this.props.userId,
+      startAt: moment(fields.start_at, this.state.dateFormat).format(
+        'YYYY.MM.DD',
+      ),
+      participants: fields.participants,
+    }).catch(error => {
+      notification.error({
+        message: 'Cant create new event',
+        description: error.message,
       });
-    console.log(docRef);
+    });
+
     notification.success({
       message: 'Calendar',
       description: 'Event successfuly created',
@@ -44,69 +43,54 @@ class CalendarPage extends Component {
     return docRef;
   };
 
-  getEventsRef = () => {
-    const eventsRef = db
-      .collection('events')
-      .where('participants', 'array-contains-any', [this.props.userId]);
-    return eventsRef;
-  };
-
-  fetchEvents = async () => {
-    const eventsActual = await this.getEventsRef().get();
-    const events = [];
-    for (const doc of eventsActual.docs) {
-      events.push({
-        id: doc.id,
-        guests: doc.data().participants.length,
-        date: moment(doc.data().start_at),
+  eventChangeIterator = change => {
+    if (change.type === 'added') {
+      notification.info({
+        message: 'Added new event',
+        description: `Event start at: ${change.doc.data().start_at}`,
       });
     }
-    return events;
+    if (change.type === 'modified') {
+      notification.info({
+        message: 'Modified existing event',
+        description: `Event start at: ${change.doc.data().start_at}`,
+      });
+    }
+    if (change.type === 'removed') {
+      notification.info({
+        message: 'Removed event',
+        description: `Event start at: ${change.doc.data().start_at}`,
+      });
+    }
   };
 
-  observeEvents = async observer => {
-    const streamRef = await this.getEventsRef().onSnapshot(observer);
-    return streamRef;
+  mapEventIterator = doc => ({
+    id: doc.id,
+    guests: doc.data().participants.length,
+    date: moment(doc.data().start_at),
+  });
+
+  eventsObserver = querySnapshot => {
+    if (!this.state.toggleSubscribe) {
+        this.setState({ toggleSubscribe: true });
+        return;
+    }
+    const events = querySnapshot.docs.map(this.mapEventIterator);
+    this.setState({ events });
+    querySnapshot
+      .docChanges()
+      .filter(change => change.doc.data().created_by !== this.props.userId)
+      .forEach(this.eventChangeIterator);
   };
 
   componentDidMount = async () => {
-    const events = await this.fetchEvents();
+    const events = await FirestoreService.getCalendarEvents({
+      iterator: this.mapEventIterator,
+    });
     this.setState({ events });
-    const unsubscribe = await this.observeEvents({
-      next: querySnapshot => {
-        const events = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          guests: doc.data().participants.length,
-          date: moment(doc.data().start_at),
-        }));
-        this.setState({ events });
-        querySnapshot
-          .docChanges()
-          .filter(change => change.doc.data().created_by !== this.props.userId)
-          .forEach(change => {
-            if (change.type === 'added') {
-              notification.info({
-                message: 'Added new event',
-                description: `Event start at: ${change.doc.data().start_at}`,
-              });
-              console.log('New event: ', change.doc.data());
-            }
-            if (change.type === 'modified') {
-              notification.info({
-                message: 'Modified existing event',
-                description: `Event start at: ${change.doc.data().start_at}`,
-              });
-              console.log('Modified event: ', change.doc.data());
-            }
-            if (change.type === 'removed') {
-              notification.info({
-                message: 'Removed event',
-                description: `Event start at: ${change.doc.data().start_at}`,
-              });
-              console.log('Removed event: ', change.doc.data());
-            }
-          });
-      },
+
+    const unsubscribe = await FirestoreService.streamCalendarEvents({
+      next: this.eventsObserver,
       error: error =>
         notification.error({
           message: 'Error of streaming',
