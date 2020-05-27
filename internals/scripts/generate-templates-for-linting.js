@@ -236,7 +236,7 @@ async function generateComponent({ name, memo }) {
  * @returns {Promise<string>} - Relative path to the generated container
  */
 async function generateContainer({ name, memo }) {
-  const targetFolder = 'containers';
+  const targetFolder = 'pages';
   const componentName = `${NAMESPACE}Container${name}`;
   const relativePath = `${targetFolder}/${componentName}`;
   const container = `container/${memo ? 'Pure' : 'NotPure'}`;

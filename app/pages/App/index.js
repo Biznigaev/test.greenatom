@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Layout } from 'antd';
 
 import ProtectedRoute from 'components/ProtectedRoute/Loadable';
-import LoginPage from 'containers/LoginPage/Loadable';
-import CalendarPage from 'containers/CalendarPage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
+import LoginPage from 'pages/LoginPage/Loadable';
+import CalendarPage from 'pages/CalendarPage/Loadable';
+import NotFoundPage from 'pages/NotFoundPage/Loadable';
 
 import GlobalStyle from '../../global-styles';
 

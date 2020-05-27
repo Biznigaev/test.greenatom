@@ -24,10 +24,10 @@ module.exports = plop => {
   plop.addHelper('directory', comp => {
     try {
       fs.accessSync(
-        path.join(__dirname, `../../app/containers/${comp}`),
+        path.join(__dirname, `../../app/pages/${comp}`),
         fs.F_OK,
       );
-      return `containers/${comp}`;
+      return `pages/${comp}`;
     } catch (e) {
       return `components/${comp}`;
     }

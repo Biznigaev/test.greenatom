@@ -5,7 +5,7 @@
  */
 import { defineMessages } from 'react-intl';
 
-export const scope = 'app.containers.NotFoundPage';
+export const scope = 'app.pages.NotFoundPage';
 
 export default defineMessages({
   title: '404',
