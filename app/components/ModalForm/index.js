@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DatePicker, Form, Modal, Input } from 'antd';
+import { DatePicker, Form, Modal } from 'antd';
 import SelectPersons from 'components/SelectPersons';
 import moment from 'moment';
 import './index.css';
@@ -39,7 +39,7 @@ const ModalForm = ({ visible, onCreate, onCancel, dateFormat }) => {
         name="form_in_modal"
         initialValues={{
           participants: [],
-          start_at: moment().format(dateFormat),
+          start_at: moment(),
         }}
       >
         <Form.Item
@@ -50,20 +50,9 @@ const ModalForm = ({ visible, onCreate, onCancel, dateFormat }) => {
               required: true,
               message: messages.field.start_at.validator.required,
             },
-            {
-              validador: (rule, value) => {
-                if (moment(value, dateFormat).isValid()) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(
-                  messages.field.start_at.validator.dateFormat,
-                );
-              },
-            },
           ]}
         >
-          <Input />
-          {/* <DatePicker format="DD.MM.YYYY" /> */}
+          <DatePicker format={dateFormat} />
         </Form.Item>
         <Form.Item
           name="participants"
