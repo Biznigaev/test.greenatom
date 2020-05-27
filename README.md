@@ -17,7 +17,10 @@ Corporate calendar application based on react-boilerplate.
 `npm run dev`
 
 ## Production:
+Build:
 `npm run build`
+Start:
+`npm run start`
 
 ## Available users:
 - username: `user1@greenatom.ru` password: `greenatom1` (kCDRyzmiRreKj3cWK3Myj58oZUa2) document_id: users/mpa0xHNRf0mRAjXsaV4c
