@@ -1,60 +1,27 @@
-import React from 'react';
-import { Modal, Button } from 'antd';
-import './index.css';
+import React, { useState } from 'react';
+import { Button } from 'antd';
+import ModalForm from 'components/ModalForm/Loadable';
 import messages from './messages';
 
-class CalendarModal extends React.Component {
-  state = {
-    ModalText: 'Content of the modal',
-    visible: false,
-    confirmLoading: false,
+const CalendarModal = ({ createEvent, dateFormat }) => {
+  const [visible, setVisible] = useState(false);
+  const onCreate = values => {
+    createEvent(values);
+    setVisible(false);
   };
-
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
-  handleOk = () => {
-    this.setState({
-      ModalText: 'The modal will be closed after two seconds',
-      confirmLoading: true,
-    });
-    setTimeout(() => {
-      this.setState({
-        visible: false,
-        confirmLoading: false,
-      });
-    }, 2000);
-  };
-
-  handleCancel = () => {
-    console.log('Clicked cancel button');
-    this.setState({
-      visible: false,
-    });
-  };
-
-  render() {
-    const { visible, confirmLoading, ModalText } = this.state;
-    return (
-      <div>
-        <Button type="primary" onClick={this.showModal}>
-          {messages.button_text}
-        </Button>
-        <Modal
-          title="Title"
-          visible={visible}
-          onOk={this.handleOk}
-          confirmLoading={confirmLoading}
-          onCancel={this.handleCancel}
-        >
-          <p>{ModalText}</p>
-        </Modal>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Button type="primary" onClick={() => setVisible(true)}>
+        {messages.button.modal}
+      </Button>
+      <ModalForm
+        visible={visible}
+        onCreate={onCreate}
+        onCancel={() => setVisible(false)}
+        dateFormat={dateFormat}
+      />
+    </div>
+  );
+};
 
 export default CalendarModal;

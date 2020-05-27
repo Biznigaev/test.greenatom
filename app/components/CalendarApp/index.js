@@ -1,7 +1,7 @@
 import React from 'react';
 import { Spin, Calendar, Badge } from 'antd';
 import Moment from 'moment';
-import './calendar.css';
+import './index.css';
 
 const CalendarApp = props => {
   const { events } = props;

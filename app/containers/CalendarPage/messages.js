@@ -11,4 +11,5 @@ export default defineMessages({
   header: {
     button: 'Logout',
   },
+  spin_logout_tip: 'Logging out ...',
 });
